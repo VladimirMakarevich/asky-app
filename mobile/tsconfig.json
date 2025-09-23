@@ -19,7 +19,12 @@
     "experimentalDecorators": true,
     "target": "es2022",
     "useDefineForClassFields": false,
-    "lib": ["es2022", "dom", "dom.iterable"]
+    "lib": [
+      "es2022",
+      "dom",
+      "dom.iterable"
+    ],
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "enableIvy": true,

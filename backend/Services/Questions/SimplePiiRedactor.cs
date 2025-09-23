@@ -29,14 +29,15 @@ public sealed class SimplePiiRedactor : IPiiRedactor
             return (snapshot, options);
         }
 
-        var sanitizedFacts = snapshot.KnownFacts.ToDictionary(
-            kvp => Sanitize(kvp.Key),
-            kvp => Sanitize(kvp.Value),
-            StringComparer.OrdinalIgnoreCase);
+        var sanitizedFacts = snapshot.KnownFacts
+            .Select(kvp => (Key: Sanitize(kvp.Key), Value: Sanitize(kvp.Value)))
+            .Where(pair => !string.IsNullOrWhiteSpace(pair.Key) && !string.IsNullOrWhiteSpace(pair.Value))
+            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase);
 
         var sanitizedAsked = snapshot.AskedRecently
             .Select(Sanitize)
-            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .Select(s => s.Trim())
+            .Where(s => s.Length > 0)
             .ToArray();
 
         var sanitizedSnapshot = snapshot with
@@ -55,11 +56,11 @@ public sealed class SimplePiiRedactor : IPiiRedactor
         return (sanitizedSnapshot, sanitizedOptions);
     }
 
-    private static string? Sanitize(string? value)
+    private static string Sanitize(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            return value;
+            return string.Empty;
         }
 
         var result = EmailRegex.Replace(value, "<pii:email>");

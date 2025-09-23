@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle, SlicePipe } from '@angular/common';
+import { AsyncPipe, NgClass, NgFor, NgIf, SlicePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   IonBadge,
@@ -15,21 +15,20 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonMenuButton,
   IonNote,
   IonProgressBar,
   IonRefresher,
   IonRefresherContent,
-  IonSkeletonText,
   IonSpinner,
-  IonText,
   IonTitle,
   IonToolbar
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { play, stop, syncOutline, settingsOutline, chatbubbleEllipses } from 'ionicons/icons';
-import { Observable } from 'rxjs';
+import { RefresherCustomEvent } from '@ionic/angular';
 import { RouterLink } from '@angular/router';
+import { addIcons } from 'ionicons';
+import { chatbubbleEllipses, play, settingsOutline, stop, syncOutline } from 'ionicons/icons';
+import { Observable } from 'rxjs';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 import { ListenFacadeService } from '../../services/listen-facade.service';
 import { ListenViewState } from '../../state/listen.state';
@@ -41,11 +40,9 @@ addIcons({ play, stop, syncOutline, settingsOutline, chatbubbleEllipses });
   standalone: true,
   imports: [
     AsyncPipe,
-    DatePipe,
     NgClass,
     NgFor,
     NgIf,
-    NgStyle,
     SlicePipe,
     IonBadge,
     IonButton,
@@ -61,17 +58,15 @@ addIcons({ play, stop, syncOutline, settingsOutline, chatbubbleEllipses });
     IonItem,
     IonLabel,
     IonList,
-    IonMenuButton,
     IonNote,
     IonProgressBar,
     IonRefresher,
     IonRefresherContent,
-    IonSkeletonText,
     IonSpinner,
-    IonText,
     IonTitle,
     IonToolbar,
-    RouterLink
+    RouterLink,
+    TranslatePipe
   ],
   templateUrl: './listen.page.html',
   styleUrls: ['./listen.page.scss']
@@ -97,11 +92,11 @@ export class ListenPage implements OnInit, OnDestroy {
     }
   }
 
-  async onRefresh(event: CustomEvent): Promise<void> {
+  async onRefresh(event: RefresherCustomEvent): Promise<void> {
     try {
       await this.facade.refreshConnection();
     } finally {
-      event.target.complete();
+      event.detail.complete();
     }
   }
 

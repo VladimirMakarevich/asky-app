@@ -76,13 +76,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "asky-mobile:build:production"
+              "buildTarget": "asky-mobile:build:production"
             },
             "development": {
-              "browserTarget": "asky-mobile:build:development"
+              "buildTarget": "asky-mobile:build:development"
             },
             "e2e": {
-              "browserTarget": "asky-mobile:build:e2e"
+              "buildTarget": "asky-mobile:build:e2e"
             }
           },
           "defaultConfiguration": "development"

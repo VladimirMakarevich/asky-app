@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AppSettings, DEFAULT_SETTINGS } from '../models/settings.model';
 import { AnalyticsService } from './analytics.service';
+import { TranslationService } from './translation.service';
 
 const STORAGE_KEY = 'asky_app_settings';
 
@@ -15,8 +16,9 @@ export class SettingsService {
 
   readonly settings$: Observable<AppSettings> = this.subject.asObservable();
 
-  constructor(private readonly analytics: AnalyticsService) {
+  constructor(private readonly analytics: AnalyticsService, private readonly translation: TranslationService) {
     this.ready = this.restore();
+    this.translation.setLocale(this.subject.getValue().locale);
   }
 
   async ensureReady(): Promise<void> {
@@ -33,6 +35,7 @@ export class SettingsService {
     this.subject.next(next);
     await Preferences.set({ key: STORAGE_KEY, value: JSON.stringify(next) });
     this.analytics.setEnabled(next.analyticsEnabled);
+    this.translation.setLocale(next.locale);
   }
 
   private async restore(): Promise<void> {
@@ -43,6 +46,7 @@ export class SettingsService {
         const merged = this.mergeDefaults(parsed);
         this.subject.next(merged);
         this.analytics.setEnabled(merged.analyticsEnabled);
+        this.translation.setLocale(merged.locale);
         return;
       } catch (error) {
         console.warn('Unable to parse stored settings. Falling back to defaults.', error);
@@ -52,6 +56,7 @@ export class SettingsService {
     const defaults = this.mergeDefaults(DEFAULT_SETTINGS);
     this.subject.next(defaults);
     this.analytics.setEnabled(defaults.analyticsEnabled);
+    this.translation.setLocale(defaults.locale);
   }
 
   private mergeDefaults(settings: AppSettings): AppSettings {

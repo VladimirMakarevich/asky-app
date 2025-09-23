@@ -186,7 +186,10 @@ export class ListenFacadeService implements OnDestroy {
 
   private handleError(error: ErrorEvent): void {
     this.patch({ error });
-    this.analytics.logEvent('listen_error', error);
+    this.analytics.logEvent('listen_error', {
+      reason: error.reason,
+      details: error.details ?? null
+    });
   }
 
   private patch(patch: Partial<ListenViewState>): void {

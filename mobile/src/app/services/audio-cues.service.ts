@@ -1,41 +1,45 @@
 import { Injectable } from '@angular/core';
-import { NativeAudio } from '@capacitor-community/native-audio';
-import { Capacitor } from '@capacitor/core';
 
-const SOUND_IDS = {
-  start: 'asky_start',
-  stop: 'asky_stop',
-  success: 'asky_success'
-} as const;
+const SOUND_FILES: Record<'start' | 'stop' | 'success', string> = {
+  start: 'assets/audio/start.wav',
+  stop: 'assets/audio/stop.wav',
+  success: 'assets/audio/success.wav'
+};
 
 @Injectable({ providedIn: 'root' })
 export class AudioCuesService {
   private initialized = false;
+  private readonly sounds = new Map<keyof typeof SOUND_FILES, HTMLAudioElement>();
 
   async preload(): Promise<void> {
-    if (this.initialized || !Capacitor.isPluginAvailable('NativeAudio')) {
-      this.initialized = true;
+    if (this.initialized) {
       return;
     }
 
-    await Promise.allSettled([
-      NativeAudio.preload({ assetId: SOUND_IDS.start, assetPath: 'audio/start.wav' }),
-      NativeAudio.preload({ assetId: SOUND_IDS.stop, assetPath: 'audio/stop.wav' }),
-      NativeAudio.preload({ assetId: SOUND_IDS.success, assetPath: 'audio/success.wav' })
-    ]);
+    Object.entries(SOUND_FILES).forEach(([key, src]) => {
+      const audio = new Audio(src);
+      audio.load();
+      this.sounds.set(key as keyof typeof SOUND_FILES, audio);
+    });
 
     this.initialized = true;
   }
 
-  async play(sound: keyof typeof SOUND_IDS): Promise<void> {
+  async play(sound: keyof typeof SOUND_FILES): Promise<void> {
     if (!this.initialized) {
       await this.preload();
     }
 
-    if (!Capacitor.isPluginAvailable('NativeAudio')) {
+    const audio = this.sounds.get(sound);
+    if (!audio) {
       return;
     }
 
-    await NativeAudio.play({ assetId: SOUND_IDS[sound] }).catch(() => undefined);
+    try {
+      audio.currentTime = 0;
+      await audio.play();
+    } catch (error) {
+      console.debug('Audio cue playback failed', error);
+    }
   }
 }

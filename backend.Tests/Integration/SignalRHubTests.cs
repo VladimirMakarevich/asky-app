@@ -18,7 +18,7 @@ public sealed class SignalRHubTests : IClassFixture<BackendWebApplicationFactory
     [Fact]
     public async Task GenerateQuestions_ReturnsFallbackWhenLlmUnavailable()
     {
-        using var connection = await _factory.CreateHubConnectionAsync();
+        await using var connection = await _factory.CreateHubConnectionAsync();
         var tcs = new TaskCompletionSource<IReadOnlyList<string>>();
 
         connection.On<JsonElement>("Questions", element =>
@@ -43,7 +43,7 @@ public sealed class SignalRHubTests : IClassFixture<BackendWebApplicationFactory
     [Fact]
     public async Task SendAudioFrame_RejectsPayloadAboveLimit()
     {
-        using var connection = await _factory.CreateHubConnectionAsync();
+        await using var connection = await _factory.CreateHubConnectionAsync();
         var oversizedPayload = new byte[9000];
 
         await Assert.ThrowsAsync<HubException>(() =>

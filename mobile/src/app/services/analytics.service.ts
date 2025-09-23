@@ -11,7 +11,7 @@ export class AnalyticsService {
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
     if (Capacitor.isPluginAvailable('FirebaseAnalytics')) {
-      void FirebaseAnalytics.setCollectionEnabled({ enabled }).catch(() => undefined);
+      void FirebaseAnalytics.setEnabled({ enabled }).catch(() => undefined);
     }
   }
 

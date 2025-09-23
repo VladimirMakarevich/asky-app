@@ -1,6 +1,6 @@
 <ion-header translucent>
   <ion-toolbar>
-    <ion-title>Слушать</ion-title>
+    <ion-title>{{ 'listen.title' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button routerLink="/settings" fill="clear" color="medium">
         <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
@@ -16,123 +16,122 @@
   </ion-refresher>
 
   <ng-container *ngIf="state$ | async as state">
-  <div class="listen-container">
-    <section class="status-row">
-      <ion-chip [color]="state.connection === 'connected' ? 'success' : 'warning'">
-        <ion-icon name="sync-outline"></ion-icon>
-        <ion-label>
-          {{ state.connection === 'connected' ? 'Подключено' : 'Ожидает' }}
-        </ion-label>
-      </ion-chip>
+    <div class="listen-container">
+      <section class="status-row">
+        <ion-chip [color]="state.connection === 'connected' ? 'success' : 'warning'">
+          <ion-icon name="sync-outline"></ion-icon>
+          <ion-label>
+            {{ state.connection === 'connected' ? ('listen.status.connected' | translate) : ('listen.status.waiting' | translate) }}
+          </ion-label>
+        </ion-chip>
 
-      <ion-badge color="tertiary" *ngIf="state.questions.length">{{ state.questions.length }} вопросов</ion-badge>
-    </section>
+        <ion-badge color="tertiary" *ngIf="state.questions.length">
+          {{ 'listen.questions.countLabel' | translate: { count: state.questions.length } }}
+        </ion-badge>
+      </section>
 
-    <ion-card class="transcripts-card">
-      <ion-card-content>
-        <ion-list lines="none">
-          <ion-item class="partial" *ngIf="state.partial">
-            <ion-icon slot="start" name="chatbubbleEllipses"></ion-icon>
-            <ion-label>
-              <h3>Распознаём…</h3>
-              <p>{{ state.partial.text }}</p>
-            </ion-label>
-            <ion-spinner slot="end"></ion-spinner>
-          </ion-item>
-
-          <ion-item *ngIf="!state.partial && !state.transcripts.length">
-            <ion-label color="medium">Пока нет транскриптов. Нажмите «Старт», чтобы начать.</ion-label>
-          </ion-item>
-
-          <ion-item *ngFor="let item of state.transcripts" [ngClass]="item.type">
-            <ion-label>
-              <h3>Финальный фрагмент</h3>
-              <p>{{ item.text }}</p>
-              <ion-note *ngIf="item.facts?.length" color="success">
-                Факты: {{ item.facts?.join(', ') }}
-              </ion-note>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="questions-card">
-      <ion-card-content>
-        <div class="questions-header">
-          <h2>Рекомендованные вопросы</h2>
-          <ion-button size="small" fill="outline" [disabled]="state.pendingQuestions" (click)="onGenerateQuestions()">
-            <ion-spinner slot="start" *ngIf="state.pendingQuestions"></ion-spinner>
-            Получить вопросы
-          </ion-button>
-        </div>
-
-        <ion-list lines="full">
-          <ng-container *ngIf="state.questions.length; else emptyQuestions">
-            <ion-item
-              *ngFor="let question of (state.showAllQuestions ? state.questions : (state.questions | slice:0:3))"
-              [detail-icon]="undefined"
-            >
+      <ion-card class="transcripts-card">
+        <ion-card-content>
+          <ion-list lines="none">
+            <ion-item class="partial" *ngIf="state.partial">
+              <ion-icon slot="start" name="chatbubbleEllipses"></ion-icon>
               <ion-label>
-                <h3 [ngClass]="{ asked: question.askedRecently }">{{ question.text }}</h3>
-                <ion-note color="medium" *ngIf="question.tags?.length">
-                  {{ question.tags.join(', ') }}
+                <h3>{{ 'listen.partial.title' | translate }}</h3>
+                <p>{{ state.partial.text }}</p>
+              </ion-label>
+              <ion-spinner slot="end"></ion-spinner>
+            </ion-item>
+
+            <ion-item *ngIf="!state.partial && !state.transcripts.length">
+              <ion-label color="medium">{{ 'listen.empty' | translate }}</ion-label>
+            </ion-item>
+
+            <ion-item *ngFor="let item of state.transcripts" [ngClass]="item.type">
+              <ion-label>
+                <h3>{{ 'listen.final.title' | translate }}</h3>
+                <p>{{ item.text }}</p>
+                <ion-note *ngIf="item.facts?.length" color="success">
+                  {{ 'listen.final.factsPrefix' | translate }} {{ item.facts?.join(', ') }}
                 </ion-note>
               </ion-label>
-              <ion-buttons slot="end">
-                <ion-button
-                  size="small"
-                  color="success"
-                  (click)="markQuestionAsked(question.id)"
-                  *ngIf="!question.askedRecently"
-                >
-                  Задать
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="questions-card">
+        <ion-card-content>
+          <div class="questions-header">
+            <h2>{{ 'listen.questions.title' | translate }}</h2>
+            <ion-button size="small" fill="outline" [disabled]="state.pendingQuestions" (click)="onGenerateQuestions()">
+              <ion-spinner slot="start" *ngIf="state.pendingQuestions"></ion-spinner>
+              {{ 'listen.questions.button' | translate }}
+            </ion-button>
+          </div>
+
+          <ion-list lines="full">
+            <ng-container *ngIf="state.questions.length; else emptyQuestions">
+              <ion-item *ngFor="let question of (state.showAllQuestions ? state.questions : (state.questions | slice:0:3))">
+                <ion-label>
+                  <h3 [ngClass]="{ asked: question.askedRecently }">{{ question.text }}</h3>
+                  <ion-note color="medium" *ngIf="question.tags?.length">
+                    {{ question.tags?.join(', ') }}
+                  </ion-note>
+                </ion-label>
+                <ion-buttons slot="end">
+                  <ion-button
+                    size="small"
+                    color="success"
+                    (click)="markQuestionAsked(question.id)"
+                    *ngIf="!question.askedRecently"
+                  >
+                    {{ 'listen.questions.ask' | translate }}
+                  </ion-button>
+                  <ion-button
+                    size="small"
+                    color="medium"
+                    fill="clear"
+                    (click)="unmarkQuestion(question.id)"
+                    *ngIf="question.askedRecently"
+                  >
+                    {{ 'listen.questions.hide' | translate }}
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+
+              <ion-item *ngIf="state.questions.length > 3">
+                <ion-button fill="clear" size="small" (click)="toggleQuestionsExpanded()">
+                  {{ state.showAllQuestions ? ('listen.questions.showLess' | translate) : ('listen.questions.showMore' | translate) }}
                 </ion-button>
-                <ion-button
-                  size="small"
-                  color="medium"
-                  fill="clear"
-                  (click)="unmarkQuestion(question.id)"
-                  *ngIf="question.askedRecently"
-                >
-                  Скрыть
-                </ion-button>
-              </ion-buttons>
-            </ion-item>
+              </ion-item>
+            </ng-container>
 
-            <ion-item *ngIf="state.questions.length > 3">
-              <ion-button fill="clear" size="small" (click)="toggleQuestionsExpanded()">
-                {{ state.showAllQuestions ? 'Показать меньше' : 'Показать ещё' }}
-              </ion-button>
-            </ion-item>
-          </ng-container>
+            <ng-template #emptyQuestions>
+              <ion-item>
+                <ion-label color="medium">{{ 'listen.questions.empty' | translate }}</ion-label>
+              </ion-item>
+            </ng-template>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
 
-          <ng-template #emptyQuestions>
-            <ion-item>
-              <ion-label color="medium">Запросите вопросы, чтобы получить идеи для продолжения разговора.</ion-label>
-            </ion-item>
-          </ng-template>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
+      <ion-card color="danger" *ngIf="state.error">
+        <ion-card-content class="error-card">
+          <h3>{{ 'listen.error.heading' | translate }}: {{ state.error!.reason }}</h3>
+          <p>{{ state.error!.details }}</p>
+          <ion-button fill="outline" size="small" (click)="facade.clearError()">{{ 'listen.error.dismiss' | translate }}</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
 
-    <ion-card color="danger" *ngIf="state.error">
-      <ion-card-content class="error-card">
-        <h3>Ошибка: {{ state.error?.reason }}</h3>
-        <p>{{ state.error?.details }}</p>
-        <ion-button fill="outline" size="small" (click)="facade.clearError()">Скрыть</ion-button>
-      </ion-card-content>
-    </ion-card>
-  </div>
-
-  <ion-fab slot="fixed" vertical="bottom" horizontal="center">
-    <ion-fab-button
-      color="primary"
-      [disabled]="state.recorder === 'starting'"
-      (click)="onToggleRecording(state)"
-    >
-      <ion-icon [name]="state.recorder === 'recording' ? 'stop' : 'play'"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-</ng-container>
+    <ion-fab slot="fixed" vertical="bottom" horizontal="center">
+      <ion-fab-button
+        color="primary"
+        [disabled]="state.recorder === 'starting'"
+        (click)="onToggleRecording(state)"
+      >
+        <ion-icon [name]="state.recorder === 'recording' ? 'stop' : 'play'"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ng-container>
 </ion-content>

@@ -73,7 +73,7 @@ export function createFrameAccumulator(frameSize = 320): FrameAccumulator {
   return {
     append(samples: Float32Array) {
       if (buffer.length === 0) {
-        buffer = samples;
+        buffer = samples.slice();
       } else {
         const merged = new Float32Array(buffer.length + samples.length);
         merged.set(buffer);

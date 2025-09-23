@@ -11,7 +11,7 @@ import { appRoutes } from './app.routes';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideIonicAngular({
-      mode: 'md'
+      mode: 'ios'
     }),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideRouter(appRoutes, withComponentInputBinding()),

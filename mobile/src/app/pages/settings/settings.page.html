@@ -3,38 +3,38 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>Настройки</ion-title>
+    <ion-title>{{ 'settings.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
   <ion-list *ngIf="form" inset>
     <ion-item>
-      <ion-label>Язык распознавания</ion-label>
+      <ion-label>{{ 'settings.locale' | translate }}</ion-label>
       <ion-select interface="popover" [formControl]="form.controls.locale">
         <ion-select-option *ngFor="let locale of locales" [value]="locale">{{ locale }}</ion-select-option>
       </ion-select>
     </ion-item>
 
     <ion-item>
-      <ion-label>Модель</ion-label>
+      <ion-label>{{ 'settings.model' | translate }}</ion-label>
       <ion-select interface="popover" [formControl]="form.controls.model">
         <ion-select-option *ngFor="let model of models" [value]="model">{{ model }}</ion-select-option>
       </ion-select>
     </ion-item>
 
     <ion-item>
-      <ion-label>Автостарт прослушивания</ion-label>
+      <ion-label>{{ 'settings.autoStart' | translate }}</ion-label>
       <ion-toggle [formControl]="form.controls.autoStart"></ion-toggle>
     </ion-item>
 
     <ion-item>
-      <ion-label>Отправлять фидбек</ion-label>
+      <ion-label>{{ 'settings.sendFeedback' | translate }}</ion-label>
       <ion-toggle [formControl]="form.controls.sendFeedback"></ion-toggle>
     </ion-item>
 
     <ion-item>
-      <ion-label>Аналитика (Firebase)</ion-label>
+      <ion-label>{{ 'settings.analytics' | translate }}</ion-label>
       <ion-toggle [formControl]="form.controls.analyticsEnabled"></ion-toggle>
     </ion-item>
   </ion-list>

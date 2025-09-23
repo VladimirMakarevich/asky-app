@@ -37,7 +37,6 @@ public sealed class QuestionGenerationService : IQuestionGenerationService
     {
         var (sanitizedSnapshot, sanitizedOptions) = _piiRedactor.Redact(snapshot, options);
         var stopwatch = Stopwatch.StartNew();
-        var usedFallback = false;
 
         try
         {
@@ -51,11 +50,9 @@ public sealed class QuestionGenerationService : IQuestionGenerationService
             }
 
             _logger.LogInformation("LLM returned no candidates. Falling back to 4W1H template for {ConnectionId}", connectionId);
-            usedFallback = true;
         }
         catch (Exception ex)
         {
-            usedFallback = true;
             _logger.LogError(ex, "LLM question generation failed for {ConnectionId}", connectionId);
             _telemetry.RecordError("llm", ex.GetType().Name);
         }

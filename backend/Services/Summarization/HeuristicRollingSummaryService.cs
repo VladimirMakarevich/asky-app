@@ -14,7 +14,7 @@ namespace AskyBackend.Services.Summarization;
 /// </summary>
 public sealed class HeuristicRollingSummaryService : IRollingSummaryService
 {
-    private static readonly Regex WhitespaceRegex = new("\s+", RegexOptions.Compiled);
+    private static readonly Regex WhitespaceRegex = new(@"\s+", RegexOptions.Compiled);
 
     private readonly IConversationContextStore _contextStore;
     private readonly RollingSummaryOptions _options;

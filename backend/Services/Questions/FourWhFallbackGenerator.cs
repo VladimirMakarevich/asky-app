@@ -43,7 +43,7 @@ public sealed class FourWhFallbackGenerator : IQuestionFallbackGenerator
                 continue;
             }
 
-            results.Add(new QuestionItem(text, new[] { tag }, confidence: 0.2, novelty: 0.1));
+            results.Add(new QuestionItem(text, new[] { tag }, Confidence: 0.2, Novelty: 0.1));
             if (results.Count >= _options.FallbackQuestionCount)
             {
                 break;

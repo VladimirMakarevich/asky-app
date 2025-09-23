@@ -1,14 +1,8 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
   IonBackButton,
-  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -23,28 +17,28 @@ import {
 } from '@ionic/angular/standalone';
 import { debounceTime } from 'rxjs/operators';
 
-import { environment } from '../../environments/environment';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+
+import { environment } from '../../../environments/environment';
 import { AppSettings } from '../../models/settings.model';
 import { SettingsService } from '../../services/settings.service';
 
-type SettingsForm = FormGroup<{
+type SettingsFormControls = {
   locale: FormControl<string>;
   model: FormControl<string>;
   autoStart: FormControl<boolean>;
   sendFeedback: FormControl<boolean>;
   analyticsEnabled: FormControl<boolean>;
-}>;
+};
 
 @Component({
   selector: 'app-settings',
   standalone: true,
   imports: [
-    AsyncPipe,
     NgFor,
     NgIf,
     ReactiveFormsModule,
     IonBackButton,
-    IonButton,
     IonButtons,
     IonContent,
     IonHeader,
@@ -55,7 +49,8 @@ type SettingsForm = FormGroup<{
     IonSelectOption,
     IonTitle,
     IonToggle,
-    IonToolbar
+    IonToolbar,
+    TranslatePipe
   ],
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss']
@@ -63,18 +58,20 @@ type SettingsForm = FormGroup<{
 export class SettingsPage implements OnInit {
   readonly locales = environment.supportedLocales;
   readonly models = ['general', 'detailed', 'meeting'];
-  form!: SettingsForm;
+  form!: FormGroup<SettingsFormControls>;
 
   constructor(private readonly fb: FormBuilder, private readonly settings: SettingsService) {}
 
   async ngOnInit(): Promise<void> {
     await this.settings.ensureReady();
-    this.form = this.fb.nonNullable.group({
-      locale: this.fb.control(this.settings.value.locale),
-      model: this.fb.control(this.settings.value.model),
-      autoStart: this.fb.control(this.settings.value.autoStart),
-      sendFeedback: this.fb.control(this.settings.value.sendFeedback),
-      analyticsEnabled: this.fb.control(this.settings.value.analyticsEnabled)
+    const current = this.settings.value;
+
+    this.form = this.fb.group<SettingsFormControls>({
+      locale: this.fb.nonNullable.control(current.locale),
+      model: this.fb.nonNullable.control(current.model),
+      autoStart: this.fb.nonNullable.control(current.autoStart),
+      sendFeedback: this.fb.nonNullable.control(current.sendFeedback),
+      analyticsEnabled: this.fb.nonNullable.control(current.analyticsEnabled)
     });
 
     this.form.valueChanges.pipe(debounceTime(150)).subscribe((value: Partial<AppSettings>) => {

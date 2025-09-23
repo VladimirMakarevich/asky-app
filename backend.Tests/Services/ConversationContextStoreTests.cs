@@ -3,6 +3,7 @@ using AskyBackend.Options;
 using AskyBackend.Services.Context;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using OptionsFactory = Microsoft.Extensions.Options.Options;
 
 namespace AskyBackend.Tests.Services;
 
@@ -11,7 +12,7 @@ public sealed class ConversationContextStoreTests
     [Fact]
     public async Task SlidingWindow_Removes_ExpiredEntries()
     {
-        var options = Options.Create(new ConversationContextOptions
+        var options = OptionsFactory.Create(new ConversationContextOptions
         {
             SlidingWindow = TimeSpan.FromMilliseconds(30),
             MaxWindowCharacters = 200
@@ -32,7 +33,7 @@ public sealed class ConversationContextStoreTests
     [Fact]
     public async Task AskedRecently_Respects_MaxSize_AndDeduplicates()
     {
-        var options = Options.Create(new ConversationContextOptions
+        var options = OptionsFactory.Create(new ConversationContextOptions
         {
             MaxAskedRecently = 2
         });

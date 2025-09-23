@@ -186,8 +186,8 @@ public sealed class AzureSpeechSessionFactory : ISpeechSessionFactory
 
             var partial = new PartialTranscript(
                 e.Result.Text,
-                offset: ConvertTicksToMilliseconds(e.Result.OffsetInTicks),
-                duration: ConvertTicksToMilliseconds((long)e.Result.Duration.Ticks));
+                Offset: ConvertTicksToMilliseconds(e.Result.OffsetInTicks),
+                Duration: ConvertTicksToMilliseconds((long)e.Result.Duration.Ticks));
 
             _ = _observer.OnPartialAsync(_connectionId, partial, CancellationToken.None);
         }
@@ -201,8 +201,8 @@ public sealed class AzureSpeechSessionFactory : ISpeechSessionFactory
 
             var final = new FinalTranscript(
                 e.Result.Text,
-                offset: ConvertTicksToMilliseconds(e.Result.OffsetInTicks),
-                duration: ConvertTicksToMilliseconds((long)e.Result.Duration.Ticks));
+                Offset: ConvertTicksToMilliseconds(e.Result.OffsetInTicks),
+                Duration: ConvertTicksToMilliseconds((long)e.Result.Duration.Ticks));
 
             _ = _observer.OnFinalAsync(_connectionId, final, CancellationToken.None);
         }

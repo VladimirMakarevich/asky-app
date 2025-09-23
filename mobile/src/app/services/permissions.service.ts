@@ -1,21 +1,39 @@
 import { Injectable } from '@angular/core';
-import { VoiceRecorder } from '@capacitor-community/voice-recorder';
-import { Capacitor } from '@capacitor/core';
 
 @Injectable({ providedIn: 'root' })
 export class PermissionsService {
   async ensureMicrophonePermission(): Promise<boolean> {
-    if (!Capacitor.isPluginAvailable('VoiceRecorder')) {
-      // Allow web fallback where browser permission prompt will be used.
-      return true;
+    if (!(navigator?.mediaDevices?.getUserMedia)) {
+      return false;
     }
 
-    const hasPermission = await VoiceRecorder.hasAudioRecordingPermission();
-    if (hasPermission.value) {
-      return true;
+    const navWithPermissions = navigator as Navigator & {
+      permissions?: {
+        query(options: { name: PermissionName }): Promise<PermissionStatus>;
+      };
+    };
+
+    try {
+      if (navWithPermissions.permissions?.query) {
+        const status = await navWithPermissions.permissions.query({ name: 'microphone' });
+        if (status.state === 'granted') {
+          return true;
+        }
+        if (status.state === 'denied') {
+          return false;
+        }
+      }
+    } catch (error) {
+      console.warn('Microphone permission check failed', error);
     }
 
-    const status = await VoiceRecorder.requestAudioRecordingPermission();
-    return status.value ?? false;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+      return true;
+    } catch (error) {
+      console.warn('Microphone permission request denied', error);
+      return false;
+    }
   }
 }
