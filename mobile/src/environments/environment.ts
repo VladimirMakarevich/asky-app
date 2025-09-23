@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:5267',
+  apiBaseUrl: 'http://127.0.0.1:5267',
   signalRHubPath: '/hubs/asr',
   analytics: {
     enabled: false
