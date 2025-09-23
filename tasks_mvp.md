@@ -19,17 +19,17 @@
 5. Проверьте созданные группы: `az group list --query "[?starts_with(name,'asky-')].{name:name,location:location}" -o table`.
 
 ## Backend API (.NET 9 + SignalR)
-- Скелет ASP.NET Core проекта с SignalR Hub `/hubs/asr`, конфигурация DI и middleware.
-- Реализовать методы Hub: `SendAudioFrame`, `StopStream`, `GenerateQuestions`, отправку `Partial/Final` событий.
-- Интегрировать Azure Speech SDK (PushAudioInputStream) с очередью входящих PCM-фреймов и backpressure.
-- Реализовать хранение контекста: скользящее окно транскриптов, роллинг-сводка, `asked_recently`, известные факты.
-- Добавить конвейер Summarizer для обновления `rolling_summary` при финальных распознаваниях.
-- Инкапсулировать обращение к LLM-сервису: HTTP-клиент, схема запроса/ответа, ретраи, тайм-ауты.
-- Встроить фоллбек генератора (шаблон 4W1H) на случай недоступности LLM.
-- Добавить псевдонимизацию PII в контексте перед отправкой в LLM (конфигурируемая опция).
-- Реализовать конфигурацию лимитов: частота `SendAudioFrame`, `GenerateQuestions`, ограничения payload.
-- Настроить структурированное логирование, метрики (latency ASR/LLM, ошибки), экспорт в Application Insights.
-- Написать интеграционные тесты Hub (SignalR тестовый клиент) и модульные тесты для контекстного менеджера.
+- [x] Скелет ASP.NET Core проекта с SignalR Hub `/hubs/asr`, конфигурация DI и middleware.
+- [x] Реализовать методы Hub: `SendAudioFrame`, `StopStream`, `GenerateQuestions`, отправку `Partial/Final` событий.
+- [x] Интегрировать Azure Speech SDK (PushAudioInputStream) с очередью входящих PCM-фреймов и backpressure.
+- [x] Реализовать хранение контекста: скользящее окно транскриптов, роллинг-сводка, `asked_recently`, известные факты.
+- [x] Добавить конвейер Summarizer для обновления `rolling_summary` при финальных распознаваниях.
+- [x] Инкапсулировать обращение к LLM-сервису: HTTP-клиент, схема запроса/ответа, ретраи, тайм-ауты.
+- [x] Встроить фоллбек генератора (шаблон 4W1H) на случай недоступности LLM.
+- [x] Добавить псевдонимизацию PII в контексте перед отправкой в LLM (конфигурируемая опция).
+- [x] Реализовать конфигурацию лимитов: частота `SendAudioFrame`, `GenerateQuestions`, ограничения payload.
+- [x] Настроить структурированное логирование, метрики (latency ASR/LLM, ошибки), экспорт в Application Insights.
+- [x] Написать интеграционные тесты Hub (SignalR тестовый клиент) и модульные тесты для контекстного менеджера.
 
 ## Mobile (Ionic + Angular + Capacitor)
 - Инициализировать Ionic Angular 19 проект на последних релизах Ionic/Capacitor, подключить Capacitor Native Audio/Microphone плагины.

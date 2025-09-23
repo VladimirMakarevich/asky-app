@@ -1,0 +1,7 @@
+{
+  "name": "asky-mobile",
+  "type": "angular",
+  "integrations": {
+    "capacitor": {}
+  }
+}
