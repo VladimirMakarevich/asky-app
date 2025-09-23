@@ -1,0 +1,42 @@
+.listen-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.transcripts-card ion-item.final {
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+}
+
+.transcripts-card ion-item.partial {
+  --background: rgba(var(--ion-color-primary-rgb), 0.08);
+  border-radius: 0.75rem;
+}
+
+.questions-card ion-item {
+  --inner-padding-end: 0;
+}
+
+.questions-card h3.asked {
+  color: var(--ion-color-medium);
+  font-weight: 400;
+}
+
+.error-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+ion-fab-button {
+  width: 4rem;
+  height: 4rem;
+}
