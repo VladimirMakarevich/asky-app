@@ -1,0 +1,66 @@
+name: Deploy Cloud Infra
+
+on:
+  workflow_dispatch:
+    inputs:
+      subscription_id:
+        description: Azure subscription to deploy into (defaults to secret)
+        required: false
+      location:
+        description: Azure region for subscription-level deployment
+        required: false
+        default: westeurope
+      parameter_file:
+        description: Relative path to Bicep parameter file
+        required: false
+        default: infra/deploy.parameters.json
+  push:
+    branches:
+      - main
+    paths:
+      - infra/**
+      - .github/workflows/deploy-infra.yml
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login (Federated)
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Select subscription
+        run: |
+          SUBSCRIPTION="${{ github.event.inputs.subscription_id || secrets.AZURE_SUBSCRIPTION_ID }}"
+          if [ -z "$SUBSCRIPTION" ]; then
+            echo "Missing subscription id via input or secret" >&2
+            exit 1
+          fi
+          az account set --subscription "$SUBSCRIPTION"
+
+      - name: Deploy Bicep
+        env:
+          LOCATION: ${{ github.event.inputs.location || 'westeurope' }}
+          PARAM_FILE: ${{ github.event.inputs.parameter_file || 'infra/deploy.parameters.json' }}
+        run: |
+          if [ ! -f "$PARAM_FILE" ]; then
+            echo "Parameter file $PARAM_FILE not found" >&2
+            exit 1
+          fi
+          az deployment sub create \
+            --name asky-${{ github.run_id }} \
+            --location "$LOCATION" \
+            --template-file infra/main.bicep \
+            --parameters @"$PARAM_FILE"
+
+      - name: Logout
+        if: always()
+        run: az logout

@@ -1,15 +1,15 @@
 # MVP Implementation Task List
 
 ## Cloud
-- Создать ресурсную группу и рабочие среды (dev/stage/prod) с единым наименованием.
-- Развернуть Azure Speech Service, получить ключи/endpoint, настроить quota-лимиты.
-- Создать Azure SignalR Service (Serverless или Standard), включить приватные endpoints и connection string.
-- Подготовить App Service / Container Apps для .NET бэкенда, настроить managed identity.
-- Создать Azure Key Vault; поместить секреты Speech/LLM, разрешить доступ бэкенду по managed identity.
-- Настроить Application Insights + Log Analytics workspace; подключить к бэкенду и SignalR.
-- Выпустить TLS-сертификат (Azure Front Door/App Gateway), привязать к домену, включить HTTPS only.
-- Сформировать Terraform/Bicep шаблон для перечисленных ресурсов, настроить GitHub Actions deployment.
-- Настроить alerts: доступность Hub, задержка LLM, стоимость Speech.
+- [x] Создать ресурсную группу и рабочие среды (dev/stage/prod) с единым наименованием.
+- [x] Развернуть Azure Speech Service, получить ключи/endpoint, настроить quota-лимиты.
+- [x] Создать Azure SignalR Service (Serverless или Standard), включить приватные endpoints и connection string.
+- [x] Подготовить App Service / Container Apps для .NET бэкенда, настроить managed identity.
+- [x] Создать Azure Key Vault; поместить секреты Speech/LLM, разрешить доступ бэкенду по managed identity.
+- [x] Настроить Application Insights + Log Analytics workspace; подключить к бэкенду и SignalR.
+- [x] Выпустить TLS-сертификат (Azure Front Door/App Gateway), привязать к домену, включить HTTPS only.
+- [x] Сформировать Terraform/Bicep шаблон для перечисленных ресурсов, настроить GitHub Actions deployment.
+- [x] Настроить alerts: доступность Hub, задержка LLM, стоимость Speech.
 
 ### Cloud infra: запуск
 1. Установите Azure CLI 2.52+ и выполните `az login`, выбрав нужный tenant.
